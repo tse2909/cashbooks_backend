@@ -86,6 +86,20 @@ app.get('/names', function (req, res) {
     })
 })
 
+app.get('/getBalance', function (req, res) {
+   Transaction.aggregate([
+       {$group : { _id : "$Account", Debit: {$sum: "$Debit"}, Credit: {$sum: "$Credit"}}}
+   ], function ( err, balance){
+       if(err){
+           res.send(err)
+       } else {
+           res.json(balance)
+       }
+   })
+})
+
+
+
 app.get('/transaction', function (req, res) {
     Transaction.find({}, function (err, transaction) {
         if (err) {
@@ -95,6 +109,7 @@ app.get('/transaction', function (req, res) {
         }
     })
 })
+
 
 
 app.listen(3000, function () {
